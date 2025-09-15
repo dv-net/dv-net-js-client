@@ -1,0 +1,8 @@
+*.map
+src
+.editorconfig
+.eslintrc*
+.prettier*
+.vscode
+example.js
+package-lock.json
