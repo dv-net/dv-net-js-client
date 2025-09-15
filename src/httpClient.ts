@@ -48,15 +48,34 @@ export class AxiosHttpClient implements HttpClient {
         statusText: response.statusText,
       };
     } catch (error: any) {
-      if (error.response) {
-        throw new Error(
-          `Request failed: ${error.response.status} ${error.response.statusText} ${JSON.stringify(error.response.data)}`
-        );
-      } else if (error.request) {
-        throw new Error(`Network error: ${error.message}`);
-      } else {
-        throw new Error(`Request error: ${error.message}`);
+      if (error && error.response) {
+        const statusCode = error.response.status;
+        const responseData = error.response.data;
+        if (responseData && typeof responseData === 'object') {
+          throw responseData;
+        }
+        if (typeof responseData === 'string') {
+          try {
+            const parsed = JSON.parse(responseData);
+            throw parsed;
+          } catch (_e) {
+          }
+        }
+        throw {
+          errors: [{ message: error.response.statusText || 'Request failed' }],
+          code: statusCode,
+        };
       }
+      if (error && error.request) {
+        throw {
+          errors: [{ message: 'Network error' }],
+          code: 500,
+        };
+      }
+      throw {
+        errors: [{ message: error?.message || 'Request error' }],
+        code: 500,
+      };
     }
   }
 }
@@ -87,9 +106,15 @@ export class SimpleHttpClient implements HttpClient {
       const response = await fetch(config.url, fetchConfig);
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(
-          `Request failed: ${response.status} ${response.statusText} ${errorText}`
-        );
+        try {
+          const parsed = JSON.parse(errorText);
+          throw parsed;
+        } catch (_e) {
+          throw {
+            errors: [{ message: response.statusText || 'Request failed' }],
+            code: response.status,
+          };
+        }
       }
       const data = await response.json();
       return {
@@ -98,10 +123,13 @@ export class SimpleHttpClient implements HttpClient {
         statusText: response.statusText,
       };
     } catch (error: any) {
-      if (error.message.includes('Request failed:')) {
+      if (error && error.errors && typeof error.code !== 'undefined') {
         throw error;
       }
-      throw new Error(`Network error: ${error.message}`);
+      throw {
+        errors: [{ message: error?.message || 'Network error' }],
+        code: 0,
+      };
     }
   }
 }

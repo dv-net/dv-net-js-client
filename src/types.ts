@@ -74,11 +74,6 @@ export interface ExchangeBalance {
     currency: string;
 }
 
-export interface ExchangeBalances {
-    totalUsd: string;
-    balances: ExchangeBalance[];
-}
-
 export interface Address {
     id: string
     wallet_id: string
@@ -90,18 +85,6 @@ export interface Address {
     updated_at: string
     deleted_at: string
     dirty: boolean
-}
-
-export interface ExternalWallet {
-    address: Address[];
-    createdAt: string;
-    id: string;
-    payUrl: string;
-    storeExternalId: string;
-    storeId: string;
-    updatedAt: string;
-    rates: string[];
-    amountUsd: string;
 }
 
 export interface Asset {
@@ -147,41 +130,11 @@ export interface ProcessingWalletBalance {
     additional_data?: BlockchainAdditionalData;
 }
 
-export interface CurrencyRate {
-    code: string;
-    rate: string;
-    rateSource: string;
-}
-
 export interface Transfer {
     kind: string;
     stage: string;
     status: string;
     message: string
-}
-
-export interface ProcessingWithdrawal {
-    addressFrom: string;
-    addressTo: string;
-    amount: string;
-    amountUsd: string;
-    createdAt: string;
-    currencyId: string;
-    storeId: string;
-    transfer?: Transfer;
-    txHash: string;
-}
-
-export interface Withdrawal {
-    addressFrom: string;
-    addressTo: string;
-    amount: string;
-    amountUsd: string;
-    createdAt: string;
-    currencyId: string;
-    id: string;
-    storeId: string;
-    transferId?: string;
 }
 
 export interface AccountCurrency {
@@ -246,10 +199,6 @@ export interface WithdrawalResponse {
     amount: string,
     amount_usd: string,
     created_at: string
-}
-
-export interface AccountResponse {
-    accounts: Account[];
 }
 
 // HTTP Client interface

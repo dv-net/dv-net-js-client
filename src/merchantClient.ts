@@ -20,9 +20,6 @@ import {AxiosHttpClient} from './httpClient.js';
 import {
     DvNetException,
     DvNetInvalidResponseDataException,
-    DvNetNetworkException,
-    DvNetRequestExceptions,
-    DvNetServerException,
     DvNetUndefinedHostException,
     DvNetUndefinedXApiKeyException,
 } from './exceptions.js';
@@ -54,9 +51,9 @@ export class MerchantClient {
     }
 
     async getExchangeBalances(
-        xApiKey?: string,
+        endpoint?: string,
         host?: string,
-        endpoint?: string
+        xApiKey?: string,
     ): Promise<TotalExchangeBalanceResponse> {
         const [actualHost, actualXApiKey] = this.getActualRequestParams(xApiKey, host);
         const url = endpoint || this.buildUrl(actualHost, 'exchangeBalances');
@@ -85,9 +82,9 @@ export class MerchantClient {
     }
 
     async getProcessingWalletsBalances(
-        xApiKey?: string,
+        endpoint?: string,
         host?: string,
-        endpoint?: string
+        xApiKey?: string,
     ): Promise<ProcessingWalletBalance[]> {
         const [actualHost, actualXApiKey] = this.getActualRequestParams(xApiKey, host);
         const url = endpoint || this.buildUrl(actualHost, 'processingWalletsBalances');
@@ -95,9 +92,9 @@ export class MerchantClient {
     }
 
     async getStoreCurrencies(
-        xApiKey?: string,
+        endpoint?: string,
         host?: string,
-        endpoint?: string
+        xApiKey?: string,
     ): Promise<Currency[]> {
         const [actualHost, actualXApiKey] = this.getActualRequestParams(xApiKey, host);
         const url = endpoint || this.buildUrl(actualHost, 'storeCurrencies');
@@ -147,8 +144,8 @@ export class MerchantClient {
     async getHotWalletBalances(
         minBalance?: string,
         endpoint?: string,
+        host?: string,
         xApiKey?: string,
-        host?: string
     ): Promise<Account[]> {
         const [actualHost, actualXApiKey] = this.getActualRequestParams(xApiKey, host);
         const url = endpoint || this.buildUrl(actualHost, 'hotWalletBalances', undefined, { min_balance: minBalance });
@@ -198,48 +195,24 @@ export class MerchantClient {
                 data,
                 headers,
             });
-            this.checkOkResponse(response, {method, url: uri});
             if (!response.data || typeof response.data !== 'object' || !('data' in response.data)) {
                 throw new DvNetInvalidResponseDataException('The response does not contain an array of data.');
             }
             return response.data.data;
         } catch (error: any) {
-            if (error instanceof DvNetException) {
+            if (error && error.errors && typeof error.code !== 'undefined') {
                 throw error;
             }
-            if (error.message.includes('Request failed:')) {
-                const statusMatch = error.message.match(/Request failed: (\d+)/);
-                const status = statusMatch ? parseInt(statusMatch[1]) : 500;
-                if (status >= 400 && status < 500) {
-                    throw new DvNetNetworkException(
-                        error.message,
-                        {method, url: uri},
-                        status,
-                        error
-                    );
-                } else if (status >= 500) {
-                    throw new DvNetServerException(
-                        error.message,
-                        {method, url: uri},
-                        status,
-                        error
-                    );
-                }
+            if (error instanceof DvNetException) {
+                throw {
+                    errors: [{ message: error.message }],
+                    code: typeof error.code === 'number' ? error.code : 0,
+                };
             }
-            if (error.message.includes('Network error:')) {
-                throw new DvNetNetworkException(
-                    error.message,
-                    {method, url: uri},
-                    undefined,
-                    error
-                );
-            }
-            throw new DvNetRequestExceptions(
-                error.message,
-                {method, url: uri},
-                undefined,
-                error
-            );
+            throw {
+                errors: [{ message: error?.message || 'Unknown error' }],
+                code: 0,
+            };
         }
     }
 
@@ -253,25 +226,5 @@ export class MerchantClient {
             throw new DvNetUndefinedXApiKeyException('Please set x-api-key in client, or pass it in parameters');
         }
         return [actualHost, actualXApiKey];
-    }
-
-    private checkOkResponse(response: { status: number; data: any }, request: { method: string; url: string }): void {
-        if (response.status === 200) {
-            return;
-        }
-        if (response.status >= 400 && response.status < 500) {
-            throw new DvNetNetworkException(
-                `Client error, got response: ${JSON.stringify(response.data)} and code ${response.status}`,
-                request,
-                response.status
-            );
-        }
-        if (response.status >= 500) {
-            throw new DvNetServerException(
-                `Server error, got response: ${JSON.stringify(response.data)} and code ${response.status}`,
-                request,
-                response.status
-            );
-        }
     }
 }

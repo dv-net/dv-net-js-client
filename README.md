@@ -129,31 +129,37 @@ const client = new MerchantClient({
 
 ## Error Handling
 
-The SDK provides specific exception types for different error scenarios:
+The client now surfaces backend errors verbatim. When the API responds with an error, you receive the same shape:
+
+```json
+{
+  "errors": [
+    { "message": "email must be a valid email address", "field": "email" }
+  ],
+  "code": 422
+}
+```
+
+For non-backend issues (network, configuration), the client throws a normalized error with the same structure and `code` set to `500`:
+
+```json
+{
+  "errors": [ { "message": "Network error" } ],
+  "code": 500
+}
+```
+
+Example usage:
 
 ```typescript
-import {
-  DvNetException,
-  DvNetNetworkException,
-  DvNetServerException,
-  DvNetInvalidRequestException,
-  DvNetInvalidResponseDataException,
-  DvNetUndefinedHostException,
-  DvNetUndefinedXApiKeyException
-} from '@dv.net/js-client';
-
 try {
-  const balances = await client.getExchangeBalances();
-} catch (error) {
-  if (error instanceof DvNetNetworkException) {
-    console.error('Network error:', error.message);
-  } else if (error instanceof DvNetServerException) {
-    console.error('Server error:', error.message);
-  } else if (error instanceof DvNetInvalidRequestException) {
-    console.error('Invalid request:', error.message);
-  } else {
-    console.error('Unknown error:', error.message);
-  }
+  const wallet = await client.getExternalWallet({
+    storeExternalId: 'store-123',
+    email: 'user@example.com'
+  });
+} catch (error: any) {
+  // error has shape: { errors: { message, field? }[], code: number }
+  console.error(error);
 }
 ```
 
