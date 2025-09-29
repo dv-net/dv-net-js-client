@@ -42,7 +42,7 @@ const wallet = await client.getExternalWallet({
   email: 'user@example.com',
   ip: '192.168.1.1',
   amount: '100',
-  currency: 'Trx.Tron'
+  currency: 'TRX.Tron'
 });
 ```
 
@@ -70,7 +70,7 @@ const rate = await client.getStoreCurrencyRate({
 
 ```typescript
 const withdrawal = await client.initializeTransfer({
-  addressTo: '0x9260004698F0Ba0c8968aF9b2971154A883E7c75',
+  addressTo: 'bc1qql2ch9xrw2v4p5c0pgar2q305yl38erwlv2fjw',
   currencyId: 'BTC.Bitcoin',
   amount: '50',
   requestId: '1'
