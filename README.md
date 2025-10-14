@@ -1,21 +1,21 @@
-# DV Net TypeScript Client
+# DV Net TypeScript Client 🚀
 
 TypeScript SDK for DV Net API - a comprehensive solution for merchant integration with blockchain payment processing.
 
-## Extended Documentation
+## Extended Documentation 📚
 
 See `https://docs.dv.net/` for full API reference and integration guides.
 
-## Installation
+## Installation 📦
 
 ```bash
 npm install @dv.net/js-client
 yarn add @dv.net/js-client
 ```
 
-## Usage
+## Usage 🧩
 
-### Basic Setup
+### Basic Setup ⚙️
 
 ```typescript
 import { MerchantClient } from "@dv.net/js-client";
@@ -26,15 +26,15 @@ const client = new MerchantClient({
 });
 ```
 
-## API Methods
+## API Methods 🔌
 
-### Get Exchange Balances
+### Get Exchange Balances 💱
 
 ```typescript
 const balances = await client.getExchangeBalances();
 ```
 
-### Get External Wallet
+### Get External Wallet 👛
 
 ```typescript
 const wallet = await client.getExternalWallet({
@@ -46,19 +46,19 @@ const wallet = await client.getExternalWallet({
 });
 ```
 
-### Get Processing Wallets Balances
+### Get Processing Wallets Balances 🏦
 
 ```typescript
 const balances = await client.getProcessingWalletsBalances();
 ```
 
-### Get Store Currencies
+### Get Store Currencies 🛍️
 
 ```typescript
 const currencies = await client.getStoreCurrencies();
 ```
 
-### Get Store Currency Rate
+### Get Store Currency Rate 💹
 
 ```typescript
 const rate = await client.getStoreCurrencyRate({
@@ -66,7 +66,7 @@ const rate = await client.getStoreCurrencyRate({
 });
 ```
 
-### Initialize Transfer
+### Initialize Transfer 💸
 
 ```typescript
 const withdrawal = await client.initializeTransfer({
@@ -77,7 +77,7 @@ const withdrawal = await client.initializeTransfer({
 });
 ```
 
-### Get Withdrawal Processing Status
+### Get Withdrawal Processing Status ⏳
 
 ```typescript
 const status = await client.getWithdrawalProcessingStatus({
@@ -85,7 +85,7 @@ const status = await client.getWithdrawalProcessingStatus({
 });
 ```
 
-### Delete Withdrawal from Processing
+### Delete Withdrawal from Processing 🗑️
 
 ```typescript
 await client.deleteWithdrawalFromProcessing({
@@ -93,13 +93,13 @@ await client.deleteWithdrawalFromProcessing({
 });
 ```
 
-### Get Hot Wallet Balances
+### Get Hot Wallet Balances 🔥
 
 ```typescript
 const accounts = await client.getHotWalletBalances();
 ```
 
-## Using with Custom HTTP Client
+## Using with Custom HTTP Client 🛠️
 
 ```typescript
 import { MerchantClient, HttpClient } from '@dv.net/js-client';
@@ -127,7 +127,7 @@ const client = new MerchantClient({
 });
 ```
 
-## Error Handling
+## Error Handling ⚠️
 
 The client now surfaces backend errors verbatim. When the API responds with an error, you receive the same shape:
 
@@ -163,6 +163,6 @@ try {
 }
 ```
 
-## License
+## License 📝
 
 MIT
