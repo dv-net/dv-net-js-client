@@ -5,7 +5,7 @@ import {
     GetExternalWalletParams,
     InitializeTransferParams,
     GetWithdrawalProcessingStatusParams,
-    GetStoreCurrencyRateParams,
+    GetStoreCurrenciesRatesParams,
     DeleteWithdrawalFromProcessingParams,
     TotalExchangeBalanceResponse,
     ExternalAddressesResponse,
@@ -36,7 +36,7 @@ export class MerchantClient {
         externalWallet: '/api/v1/external/wallet',
         processingWalletsBalances: '/api/v1/external/processing-wallet-balances',
         storeCurrencies: '/api/v1/external/store/currencies',
-        storeCurrencyRate: '/api/v1/external/store/currencies/{currencyId}/rate',
+        storeCurrenciesRates: '/api/v1/external/store/currencies/rate',
         initializeTransfer: '/api/v1/external/withdrawal-from-processing',
         withdrawalProcessingStatus: '/api/v1/external/withdrawal-from-processing/{withdrawalId}',
         deleteWithdrawalFromProcessing: '/api/v1/external/withdrawal-from-processing/{id}',
@@ -101,11 +101,9 @@ export class MerchantClient {
         return await this.sendRequest('GET', url, undefined, {'x-api-key': actualXApiKey});
     }
 
-    async getStoreCurrencyRate(params: GetStoreCurrencyRateParams): Promise<CurrencyRateResponse> {
+    async getStoreCurrenciesRates(params: GetStoreCurrenciesRatesParams = {}): Promise<CurrencyRateResponse[]> {
         const [actualHost, actualXApiKey] = this.getActualRequestParams(params.xApiKey, params.host);
-        const url = params.endpoint || this.buildUrl(actualHost, 'storeCurrencyRate', {
-            currencyId: params.currencyId
-        });
+        const url = params.endpoint || this.buildUrl(actualHost, 'storeCurrenciesRates');
         return await this.sendRequest('GET', url, undefined, {'x-api-key': actualXApiKey});
     }
 

@@ -58,12 +58,13 @@ const balances = await client.getProcessingWalletsBalances();
 const currencies = await client.getStoreCurrencies();
 ```
 
-### Get Store Currency Rate 💹
+### Get Store Currencies Rates 💹
+
+Returns rates for all currencies enabled on the store. `rate` is scale-adjusted; `original_rate` is without store `rate_scale`.
 
 ```typescript
-const rate = await client.getStoreCurrencyRate({
-  currencyId: 'BTC.Bitcoin'
-});
+const rates = await client.getStoreCurrenciesRates();
+// [{ code, rate, original_rate, rate_source }, ...]
 ```
 
 ### Initialize Transfer 💸

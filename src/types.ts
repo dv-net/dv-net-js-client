@@ -174,6 +174,7 @@ export interface ExternalAddressesResponse {
 export interface CurrencyRateResponse {
     code: string;
     rate: string;
+    original_rate: string;
     rate_source: string;
 }
 
@@ -221,7 +222,7 @@ export interface EndpointsConfig {
     externalWallet?: string;
     processingWalletsBalances?: string;
     storeCurrencies?: string;
-    storeCurrencyRate?: string; // template: /api/v1/external/store/currencies/{currencyId}/rate
+    storeCurrenciesRates?: string; // /api/v1/external/store/currencies/rate
     withdrawalProcessingStatus?: string; // template: /api/v1/external/withdrawal-from-processing/{withdrawalId}
     initializeTransfer?: string;
     hotWalletBalances?: string;
@@ -265,8 +266,7 @@ export interface GetWithdrawalProcessingStatusParams {
     host?: string;
 }
 
-export interface GetStoreCurrencyRateParams {
-    currencyId: BlockchainType;
+export interface GetStoreCurrenciesRatesParams {
     xApiKey?: string;
     host?: string;
     endpoint?: string;
